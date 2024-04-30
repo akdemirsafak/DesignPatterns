@@ -1,4 +1,5 @@
 ﻿using BuilderPattern.Methods.Method1;
+using BuilderPattern.Methods.Method2;
 using System.Text;
 
 
@@ -26,12 +27,37 @@ using System.Text;
 
 //------------------------ METHOD 1
 
-var empBuilder = new EmployeeBuilderM1();
+// var empBuilder = new EmployeeBuilderM1();
 
-var emp = empBuilder
-    .SetFullName("Şafak Akdemir")
-    .SetEmail("akdemirsafak@gmail.com")
-    .SetUserName("akdemirsafak")
-    .BuildEmployee(); //builder pattern. BuildEmployee dedikten sonra EmployeeM1 dönecektir.
+// var emp = empBuilder
+//     .SetFullName("Şafak Akdemir")
+//     .SetEmail("akdemirsafak@gmail.com")
+//     .SetUserName("akdemirsafak")
+//     .BuildEmployee(); //builder pattern. BuildEmployee dedikten sonra EmployeeM1 dönecektir.
 
-Console.WriteLine(emp);
+// Console.WriteLine(emp);
+
+//------------------------ METHOD 2 Abstract Class
+
+IEmployeeBuilderM2 employeeBuilder = new InternalEmployeeBuilder();
+employeeBuilder.SetFullName("Şafak Akdemir");
+employeeBuilder.SetEmail("akdemirsafak@gmail.com");
+var emp = employeeBuilder.BuildEmployee();
+System.Console.WriteLine(emp.Email);
+
+EmployeeM2 GenerateEmployee(string fullName, string emailaddress, int empType)
+{
+    IEmployeeBuilderM2 employeeBuilder = empType switch
+    {
+        1 => new InternalEmployeeBuilder(),
+        2 => new ExternalEmployeeBuilder(),
+        _ => throw new NotImplementedException()
+
+    };
+    employeeBuilder.SetFullName(fullName);
+    employeeBuilder.SetEmail(emailaddress);
+    return employeeBuilder.BuildEmployee();
+}
+
+var employee = GenerateEmployee("akdemir safak", "safak0808@gmail.com", 1);
+System.Console.WriteLine(employee.Email);
